@@ -1,0 +1,18 @@
+Provides functions for implementing finer and dynamic D-Bus access
+control that suppliments the built-in D-Bus security mechanisms.
+The functions fall into these two groups:
+
+* Checking the peer's credentials
+* Parsing and applying access control policies
+
+The peer's credentials are queried with GetConnectionUnixProcessID
+and the results are cached for certain period of time or until the
+peer disappears.
+
+It allows to get around the following issues and limitations of the
+built-in D-Bus security policies:
+
+* They ignore the effective group id of the caller
+* They don't analize the arguments of the call
+* They don't allow to select actions based on credentials
+* They are static
