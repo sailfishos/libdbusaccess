@@ -254,13 +254,31 @@ da_policy_expr_identity_cast(
 
 static
 gboolean
+da_policy_expr_identity_match_user(
+    int uid,
+    const DACred* cred)
+{
+    if (uid < 0) {
+        /* Wild card matches everything */
+        return TRUE;
+    } else if (!cred) {
+        return FALSE;
+    } else {
+        return (uid == cred->euid);
+    }
+}
+
+static
+gboolean
 da_policy_expr_identity_match_group(
     int gid,
     const DACred* cred)
 {
     if (gid < 0) {
-        /* Whild card match */
+        /* Wild card matches everything */
         return TRUE;
+    } else if (!cred) {
+        return FALSE;
     } else if (gid == cred->egid) {
         return TRUE;
     } else {
@@ -281,7 +299,7 @@ da_policy_expr_identity_match(
     const DAPolicyCheck* pc)
 {
     DAPolicyExprIdentity* x = da_policy_expr_identity_cast(expr);
-    return (x->uid < 0 || x->uid == pc->cred->euid) &&
+    return da_policy_expr_identity_match_user(x->uid, pc->cred) &&
         da_policy_expr_identity_match_group(x->gid, pc->cred);
 }
 
@@ -504,22 +522,20 @@ da_policy_check(
     DA_ACCESS def)
 {
     DA_ACCESS result = def;
-    if (cred) {
-        if (!cred->euid) {
-            /* No checks for root user */
-            result = DA_ACCESS_ALLOW;
-        } else if (policy) {
-            DAPolicyEntry* entry = policy->entries;
-            DAPolicyCheck check;
-            check.cred = cred;
-            check.action = action;
-            check.arg = arg;
-            while (entry) {
-                if (da_policy_expr_match(entry->expr, &check)) {
-                    result = entry->access;
-                }
-                entry = entry->next;
+    if (cred && !cred->euid) {
+        /* No checks for root user */
+        result = DA_ACCESS_ALLOW;
+    } else if (policy) {
+        DAPolicyEntry* entry = policy->entries;
+        DAPolicyCheck check;
+        check.cred = cred;
+        check.action = action;
+        check.arg = arg;
+        while (entry) {
+            if (da_policy_expr_match(entry->expr, &check)) {
+                result = entry->access;
             }
+            entry = entry->next;
         }
     }
     return result;

@@ -209,6 +209,8 @@ test_policy_check1(
         DA_ACCESS_ALLOW);
     g_assert(da_policy_check(policy, &user, 0, NULL, DA_ACCESS_DENY) ==
         DA_ACCESS_ALLOW);
+    g_assert(da_policy_check(policy, NULL, 0, NULL, DA_ACCESS_DENY) ==
+        DA_ACCESS_ALLOW);
     da_policy_unref(policy);
 }
 
@@ -276,6 +278,8 @@ test_policy_check4(
         DA_ACCESS_ALLOW);
     g_assert(da_policy_check(policy, &user22, 0, NULL, DA_ACCESS_ALLOW) ==
         DA_ACCESS_DENY);
+    g_assert(da_policy_check(policy, NULL, 0, NULL, DA_ACCESS_ALLOW) ==
+        DA_ACCESS_DENY);
     da_policy_unref(policy);
 }
 
@@ -295,6 +299,8 @@ test_policy_check5(
     g_assert(da_policy_check(policy, &user11, 0, NULL, DA_ACCESS_DENY) ==
         DA_ACCESS_ALLOW);
     g_assert(da_policy_check(policy, &user22, 0, NULL, DA_ACCESS_ALLOW) ==
+        DA_ACCESS_DENY);
+    g_assert(da_policy_check(policy, NULL, 0, NULL, DA_ACCESS_ALLOW) ==
         DA_ACCESS_DENY);
     da_policy_unref(policy);
 }
