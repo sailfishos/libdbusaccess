@@ -1,3 +1,9 @@
+libdbusaccess (1.0.1) unstable; urgency=low
+
+  * Support policy check against NULL credentials
+
+ -- Slava Monich <slava.monich@jolla.com>  Sat, 04 Mar 2017 13:14:05 +0200
+
 libdbusaccess (1.0.0) unstable; urgency=low
 
   * Initial release
