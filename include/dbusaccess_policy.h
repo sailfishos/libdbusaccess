@@ -40,9 +40,9 @@ G_BEGIN_DECLS
 /*
  * The policy grammar is described in the .y file. Here is an example:
  *
- * 1.0;group(privileged)&GetProperty(Passphrase)=allow
+ * 1;group(privileged)&get(Passphrase)=allow
  *
- * It's basically the format version (1.0) followed by rules separated
+ * It's basically the format version (1) followed by rules separated
  * by semicolons. Each rule is a logical expression optionally followed
  * by the access specifier =allow or =deny (default is =allow). The
  * rules are applied in the order in this they appear in the policy.
