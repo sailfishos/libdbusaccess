@@ -192,6 +192,290 @@ test_policy_groups(
 }
 
 /*==========================================================================*
+ * Equal1
+ *==========================================================================*/
+
+static
+void
+test_policy_equal1(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 0 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(*)&bar()=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";bar()&foo(*)=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(da_policy_equal(NULL, NULL));
+    g_assert(!da_policy_equal(p1, NULL));
+    g_assert(!da_policy_equal(NULL, p2));
+    g_assert(da_policy_equal(p1, p1));
+    g_assert(da_policy_equal(p1, p2));
+    g_assert(da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal2
+ *==========================================================================*/
+
+static
+void
+test_policy_equal2(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 0 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(*)&bar()=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";bar()&foo(*)=deny", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal3
+ *==========================================================================*/
+
+static
+void
+test_policy_equal3(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 0 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(*)&bar()=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";bar()&foo(*)=allow;*=deny", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal4
+ *==========================================================================*/
+
+static
+void
+test_policy_equal4(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 0 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(a)&bar()=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";bar()&foo(b)=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal5
+ *==========================================================================*/
+
+static
+void
+test_policy_equal5(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 0 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(a)|bar()=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";foo(a)|foo(b)=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal6
+ *==========================================================================*/
+
+static
+void
+test_policy_equal6(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 1 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(*)|bar(b)=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";foo(a)|bar(*)=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal7
+ *==========================================================================*/
+
+static
+void
+test_policy_equal7(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { "bar", 2, 0 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(*)=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";bar()=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal8
+ *==========================================================================*/
+
+static
+void
+test_policy_equal8(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";foo(a)=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";!foo(a)=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal9
+ *==========================================================================*/
+
+static
+void
+test_policy_equal9(
+    void)
+{
+    static const DA_ACTION actions [] = {
+        { "foo", 1, 1 },
+        { NULL }
+    };
+
+    DAPolicy* p1 = da_policy_new_full(V ";!foo(a)=allow", actions);
+    DAPolicy* p2 = da_policy_new_full(V ";!foo(b)=allow", actions);
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal10
+ *==========================================================================*/
+
+static
+void
+test_policy_equal10(
+    void)
+{
+    DAPolicy* p1 = da_policy_new(V ";user(user)=allow");
+    DAPolicy* p2 = da_policy_new(V ";group(group)=allow");
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal11
+ *==========================================================================*/
+
+static
+void
+test_policy_equal11(
+    void)
+{
+    DAPolicy* p1 = da_policy_new(V ";*=allow");
+    DAPolicy* p2 = da_policy_new(V ";group(group)=allow");
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(!da_policy_equal(p1, p2));
+    g_assert(!da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
+ * Equal12
+ *==========================================================================*/
+
+static
+void
+test_policy_equal12(
+    void)
+{
+    DAPolicy* p1 = da_policy_new(V ";*=allow");
+    DAPolicy* p2 = da_policy_new(V ";*=allow");
+    g_assert(p1);
+    g_assert(p2);
+    g_assert(da_policy_equal(p1, p2));
+    g_assert(da_policy_equal(p2, p1));
+    da_policy_unref(p1);
+    da_policy_unref(p2);
+}
+
+/*==========================================================================*
  * Check 1
  *==========================================================================*/
 
@@ -467,6 +751,18 @@ int main(int argc, char* argv[])
     g_test_add_func(TEST_PREFIX "broken", test_policy_broken);
     g_test_add_func(TEST_PREFIX "basic", test_policy_basic);
     g_test_add_func(TEST_PREFIX "groups", test_policy_groups);
+    g_test_add_func(TEST_PREFIX "equal1", test_policy_equal1);
+    g_test_add_func(TEST_PREFIX "equal2", test_policy_equal2);
+    g_test_add_func(TEST_PREFIX "equal3", test_policy_equal3);
+    g_test_add_func(TEST_PREFIX "equal4", test_policy_equal4);
+    g_test_add_func(TEST_PREFIX "equal5", test_policy_equal5);
+    g_test_add_func(TEST_PREFIX "equal6", test_policy_equal6);
+    g_test_add_func(TEST_PREFIX "equal7", test_policy_equal7);
+    g_test_add_func(TEST_PREFIX "equal8", test_policy_equal8);
+    g_test_add_func(TEST_PREFIX "equal9", test_policy_equal9);
+    g_test_add_func(TEST_PREFIX "equal10", test_policy_equal10);
+    g_test_add_func(TEST_PREFIX "equal11", test_policy_equal11);
+    g_test_add_func(TEST_PREFIX "equal12", test_policy_equal12);
     g_test_add_func(TEST_PREFIX "check1", test_policy_check1);
     g_test_add_func(TEST_PREFIX "check2", test_policy_check2);
     g_test_add_func(TEST_PREFIX "check3", test_policy_check3);
