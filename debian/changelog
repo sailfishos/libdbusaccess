@@ -1,3 +1,9 @@
+libdbusaccess (1.0.2) unstable; urgency=low
+
+  * Added da_policy_equal() function
+
+ -- Slava Monich <slava.monich@jolla.com>  Tue, 28 Mar 2017 12:13:16 +0300
+
 libdbusaccess (1.0.1) unstable; urgency=low
 
   * Support policy check against NULL credentials

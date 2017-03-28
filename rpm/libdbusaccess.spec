@@ -1,5 +1,5 @@
 Name: libdbusaccess
-Version: 1.0.1
+Version: 1.0.2
 Release: 0
 Summary: Access control over D-Bus
 Group: Development/Libraries
