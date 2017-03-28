@@ -82,9 +82,14 @@ void
 da_policy_unref(
     DAPolicy* policy);
 
+gboolean
+da_policy_equal(
+    const DAPolicy* policy1,
+    const DAPolicy* policy2);
+
 DA_ACCESS
 da_policy_check(
-    DAPolicy* policy,
+    const DAPolicy* policy,
     const DACred* cred,
     guint action,
     const char* arg,
