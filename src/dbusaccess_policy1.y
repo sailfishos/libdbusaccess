@@ -32,7 +32,7 @@
 
 %{
 #include "dbusaccess_parser_p.h"
-#include "dbusaccess_system_p.h"
+#include "dbusaccess_system.h"
 #include "dbusaccess_log.h"
 #define FORMAT_VERSION 1
 %}

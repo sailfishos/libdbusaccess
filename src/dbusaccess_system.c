@@ -30,7 +30,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "dbusaccess_system_p.h"
+#include "dbusaccess_system.h"
 #include "dbusaccess_log.h"
 
 #include <pwd.h>

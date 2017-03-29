@@ -30,8 +30,8 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DBUSACCESS_SYSTEM_PRIVATE_H
-#define DBUSACCESS_SYSTEM_PRIVATE_H
+#ifndef DBUSACCESS_SYSTEM_H
+#define DBUSACCESS_SYSTEM_H
 
 #include "dbusaccess_types.h"
 
@@ -43,7 +43,7 @@ int
 da_system_gid(
     const char* group);
 
-#endif /* DBUSACCESS_SYSTEM_PRIVATE_H */
+#endif /* DBUSACCESS_SYSTEM_H */
 
 /*
  * Local Variables:
