@@ -1,3 +1,9 @@
+libdbusaccess (1.0.4) unstable; urgency=low
+
+  * Added DASelf object
+
+ -- Slava Monich <slava.monich@jolla.com>  Sun, 02 Apr 2017 18:04:37 +0300
+
 libdbusaccess (1.0.3) unstable; urgency=low
 
   * Made dbusaccess_system.h public
