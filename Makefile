@@ -46,6 +46,7 @@ SRC = \
   dbusaccess_peer.c \
   dbusaccess_parser.c \
   dbusaccess_policy.c \
+  dbusaccess_self.c \
   dbusaccess_system.c
 GEN_SRC = \
   dbusaccess_policy1.tab.c \

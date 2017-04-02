@@ -30,49 +30,50 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DBUSACCESS_PEER_H
-#define DBUSACCESS_PEER_H
+#ifndef DBUSACCESS_SELF_H
+#define DBUSACCESS_SELF_H
 
 #include "dbusaccess_types.h"
 
 G_BEGIN_DECLS
 
-struct da_peer {
-    DA_BUS bus;
-    const char* name;
+struct da_self {
     pid_t pid;
     DACred cred;
 };
 
 /*
- * You don't need to unref the DAPeer returned by da_peer_get. The reference
- * is stored internally by the library for certain period of time. It means
- * however that the object can go away at any time. If you need to keep the
- * pointer to this object, then you need to da_peer_ref and then da_peer_unref
- * it when you no longer need it.
+ * da_self_new_shared returns the reference to the shared instance,
+ * da_self_new always allocates the new one. Shared instance should
+ * only be used if you can assume that process credentials never change.
+ *
+ * You can use da_self_flush to clear the shared instance and force the
+ * next da_self_new_shared call to create a new one.
  */
 
-DAPeer*
-da_peer_get(
-    DA_BUS bus,
-    const char* name);
+DASelf*
+da_self_new(
+    void);
 
-DAPeer*
-da_peer_ref(
-    DAPeer* peer);
+DASelf*
+da_self_new_shared(
+    void);
+
+DASelf*
+da_self_ref(
+    DASelf* self);
 
 void
-da_peer_unref(
-    DAPeer* peer);
+da_self_unref(
+    DASelf* self);
 
 void
-da_peer_flush(
-    DA_BUS bus,
-    const char* name);
+da_self_flush(
+    void);
 
 G_END_DECLS
 
-#endif /* DBUSACCESS_PEER_H */
+#endif /* DBUSACCESS_SELF_H */
 
 /*
  * Local Variables:

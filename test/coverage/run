@@ -5,7 +5,8 @@
 
 TESTS="\
 test_cred \
-test_policy"
+test_policy \
+test_self"
 
 FLAVOR="release"
 
@@ -38,4 +39,4 @@ LIB_COV="$COV_DIR/libdbusaccess.gcov"
 rm -f "$FULL_COV" "$LIB_COV"
 lcov $LCOV_OPT -c -d "$LD_LIBRARY_PATH" -b "$BASE_DIR" -o "$FULL_COV" || exit 1
 lcov $LCOV_OPT -e "$FULL_COV" "$BASE_DIR/src/*" -o "$LIB_COV" || exit 1
-genhtml $GENHTML_OPT "$LIB_COV" --output-directory "$COV_DIR/results" || exit 1
+genhtml $GENHTML_OPT "$LIB_COV" -t libdbusaccess --output-directory "$COV_DIR/results" || exit 1

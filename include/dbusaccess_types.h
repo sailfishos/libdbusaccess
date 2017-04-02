@@ -62,13 +62,8 @@ typedef struct da_cred {
 
 } DACred;
 
-typedef struct da_peer {
-    DA_BUS bus;
-    const char* name;
-    pid_t pid;
-    DACred cred;
-} DAPeer;
-
+typedef struct da_self DASelf;
+typedef struct da_peer DAPeer;
 typedef struct da_policy /* opaque */ DAPolicy;
 
 extern GLogModule DBUSACCESS_LOG_MODULE;
