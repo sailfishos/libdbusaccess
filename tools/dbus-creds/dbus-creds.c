@@ -41,7 +41,6 @@
 
 typedef struct app {
     DA_BUS bus;
-
     const char* name;
 } App;
 
@@ -76,7 +75,7 @@ app_run(
         da_peer_flush(app->bus, app->name);
         return RET_OK;
     } else {
-        GERR("D-Bus name \"%s\" nit found", app->name);
+        GERR("D-Bus name \"%s\" not found", app->name);
         return RET_NOTFOUND;
     }
 }
