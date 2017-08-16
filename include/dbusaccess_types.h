@@ -34,6 +34,7 @@
 #define DBUSACCESS_TYPES_H
 
 #include <gutil_types.h>
+#include <sys/types.h>
 
 G_BEGIN_DECLS
 
