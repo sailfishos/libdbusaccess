@@ -16,3 +16,9 @@ Section: libdevel
 Architecture: any
 Depends: libdbusaccess (= ${binary:Version}), ${misc:Depends}
 Description: Development files for libdbusaccess
+
+Package: dbusaccess-tools
+Section: utils
+Architecture: any
+Depends: libdbusaccess, ${shlibs:Depends}, ${misc:Depends}
+Description: D-Bus access tools

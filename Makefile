@@ -230,8 +230,6 @@ $(PKGCONFIG): $(LIB_NAME).pc.in
 #
 
 INSTALL_PERM  = 644
-INSTALL_OWNER = $(shell id -u)
-INSTALL_GROUP = $(shell id -g)
 
 INSTALL = install
 INSTALL_DIRS = $(INSTALL) -d

@@ -137,3 +137,17 @@ lib-debug:
 
 lib-release:
 	@make $(SUBMAKE_OPTS) -C $(LIB_DIR) $(RELEASE_LIB_FILE) $(RELEASE_LINK_FILE)
+
+#
+# Install
+#
+
+INSTALL = install
+
+INSTALL_EXE_DIR = $(DESTDIR)/usr/bin
+
+install: $(INSTALL_EXE_DIR)
+	$(INSTALL) -m 755 $(RELEASE_EXE) $(INSTALL_EXE_DIR)
+
+$(INSTALL_EXE_DIR):
+	$(INSTALL) -d $@

@@ -15,7 +15,17 @@ Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
 %description
-Provides utilities for controlling access over D-Bus
+Provides library for controlling access over D-Bus
+
+%package -n dbusaccess-tools
+Summary: D-Bus access utilities
+
+%description -n dbusaccess-tools
+Provides dbus-creds tool
+
+%files -n dbusaccess-tools
+%defattr(-,root,root,-)
+%{_bindir}/dbus-creds
 
 %package devel
 Summary: Development library for %{name}
@@ -30,10 +40,12 @@ This package contains the development library for %{name}.
 
 %build
 make KEEP_SYMBOLS=1 release pkgconfig
+make KEEP_SYMBOLS=1 -C tools/dbus-creds release
 
 %install
 rm -rf %{buildroot}
-make install-dev DESTDIR=%{buildroot}
+make DESTDIR=%{buildroot} install-dev
+make DESTDIR=%{buildroot} -C tools/dbus-creds install
 
 %check
 make -C test test
