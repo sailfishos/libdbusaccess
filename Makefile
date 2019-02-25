@@ -173,7 +173,8 @@ clean:
 	rm -fr test/coverage/results test/coverage/*.gcov
 	rm -f *~ $(SRC_DIR)/*~ $(INCLUDE_DIR)/*~
 	rm -fr $(BUILD_DIR) RPMS installroot
-	rm -fr debian/tmp debian/libdbusaccess debian/libdbusaccess-dev
+	rm -fr debian/tmp debian/dbusaccess-tools
+	rm -fr debian/libdbusaccess debian/libdbusaccess-dev
 	rm -f documentation.list debian/files debian/*.substvars
 	rm -f debian/*.debhelper.log debian/*.debhelper debian/*~
 
