@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2019 Jolla Ltd.
+ * Copyright (C) 2017-2019 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -136,31 +136,37 @@ access:
 
 user:
     NUMBER
+    {
+        $$ = ($1 < 0) ? DA_WILDCARD : $1;
+    }
     | WILDCARD
     {
-        $$ = -1;
+        $$ = DA_WILDCARD;
     }
     | WORD
     {
         $$ = da_system_uid($1);
         if ($$ < 0) {
-            GDEBUG("Invalid user \"%s\"", $1);
-            YYERROR;
+            GWARN("Unknown user \"%s\"", $1);
+            $$ = DA_INVALID;
         }
     }
 
 group:
     NUMBER
+    {
+        $$ = ($1 < 0) ? DA_WILDCARD : $1;
+    }
     | WILDCARD
     {
-        $$ = -1;
+        $$ = DA_WILDCARD;
     }
     | WORD
     {
         $$ = da_system_gid($1);
         if ($$ < 0) {
-            GDEBUG("Invalid group \"%s\"", $1);
-            YYERROR;
+            GWARN("Unknown group \"%s\"", $1);
+            $$ = DA_INVALID;
         }
     }
 
@@ -186,7 +192,7 @@ expr:
 term:
     USER '(' user ')'
     {
-        $$ = da_parser_new_expr_identity(parser, $3, -1);
+        $$ = da_parser_new_expr_identity(parser, $3, DA_WILDCARD);
     }
     | USER '(' user ':' group ')'
     {
@@ -194,7 +200,7 @@ term:
     }
     | GROUP '(' group ')'
     {
-        $$ = da_parser_new_expr_identity(parser, -1, $3);
+        $$ = da_parser_new_expr_identity(parser, DA_WILDCARD, $3);
     }
     | ID '(' ')'
     {
