@@ -1,3 +1,9 @@
+libdbusaccess (1.0.8) unstable; urgency=low
+
+  * Tolerate non-existent users and groups
+
+ -- Slava Monich <slava.monich@jolla.com>  Wed, 03 Apr 2019 19:15:26 +0300
+
 libdbusaccess (1.0.7) unstable; urgency=low
 
   * Clean better after debian build
