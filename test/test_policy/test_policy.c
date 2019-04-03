@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2019 Jolla Ltd.
+ * Copyright (C) 2017-2019 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -115,11 +115,7 @@ test_policy_broken(
     g_assert(!da_policy_new("x"));
     g_assert(!da_policy_new("0123456789;"));
     g_assert(!da_policy_new(V "|+"));
-    g_assert(!da_policy_new(V ";user(baduser)=allow"));
-    g_assert(!da_policy_new(V ";user(-1)=allow"));
     g_assert(!da_policy_new(V ";+?=*"));
-    g_assert(!da_policy_new(V ";user(user:badgroup)=*"));
-    g_assert(!da_policy_new(V ";user(user)=foo('a','b'):user(baduser)=bar"));
     g_assert(!da_policy_new(VPLUS ";user(user:group)"));
     g_assert(!da_policy_new_full(V ";foo()", foo));
     g_assert(!da_policy_new_full(V ";bar()", foo));
@@ -148,7 +144,8 @@ test_policy_basic(
     da_policy_unref(policy);
 
     policy = da_policy_new_full(V ";user(user:group) & call(foo) & "
-        "(arg('a')|arg(\"b\"))=deny", actions);
+        "(arg('a')|arg(\"b\"))=deny; user(baduser)=allow; "
+        "group(badgroup)=allow", actions);
     g_assert(policy);
     da_policy_unref(policy);
 
@@ -178,7 +175,9 @@ test_policy_groups(
     static const DACred user123 = { 1, 1, g23, G_N_ELEMENTS(g23), 0, 0 };
     static const DACred user321 = { 1, 3, g21, G_N_ELEMENTS(g21), 0, 0 };
     static const DACred user543 = { 1, 5, g43, G_N_ELEMENTS(g43), 0, 0 };
-    DAPolicy* policy = da_policy_new(V "; group(1) | group(2) = deny");
+    DAPolicy* policy = da_policy_new(V "; group(1) | group(2) | "
+        "user(baduser:badgroup) = deny");
+
     g_assert(policy);
     g_assert(da_policy_check(policy, &user123, 0, NULL, DA_ACCESS_ALLOW) ==
         DA_ACCESS_DENY);
