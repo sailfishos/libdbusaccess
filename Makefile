@@ -1,6 +1,8 @@
 # -*- Mode: makefile-gmake -*-
 
-.PHONY: clean all debug release test
+.PHONY: clean all debug release coverage pkgconfig install install-dev test
+.PHONY: print_debug_lib print_release_lib print_coverage_lib
+
 
 #
 # Required packages
@@ -36,6 +38,7 @@ LIB_SYMLINK1 = $(LIB_DEV_SYMLINK).$(VERSION_MAJOR)
 LIB_SYMLINK2 = $(LIB_SYMLINK1).$(VERSION_MINOR)
 LIB_SONAME = $(LIB_SYMLINK1)
 LIB = $(LIB_SONAME).$(VERSION_MINOR).$(VERSION_RELEASE)
+STATIC_LIB = $(LIB_NAME).a
 
 #
 # Sources
@@ -91,19 +94,13 @@ FULL_LDFLAGS = $(BASE_FLAGS) $(LDFLAGS) -shared -Wl,-soname,$(LIB_SONAME) \
   $(shell pkg-config --libs $(PKGS))
 DEBUG_FLAGS = -g
 RELEASE_FLAGS =
-
-ifndef KEEP_SYMBOLS
-KEEP_SYMBOLS = 0
-endif
-
-ifneq ($(KEEP_SYMBOLS),0)
-RELEASE_FLAGS += -g
-endif
+COVERAGE_FLAGS = -g
 
 DEBUG_LDFLAGS = $(FULL_LDFLAGS) $(DEBUG_FLAGS)
 RELEASE_LDFLAGS = $(FULL_LDFLAGS) $(RELEASE_FLAGS)
 DEBUG_CFLAGS = $(FULL_CFLAGS) $(DEBUG_FLAGS) -DDEBUG
 RELEASE_CFLAGS = $(FULL_CFLAGS) $(RELEASE_FLAGS) -O2
+COVERAGE_CFLAGS = $(FULL_CFLAGS) $(COVERAGE_FLAGS) --coverage
 
 #
 # Files
@@ -116,14 +113,25 @@ DEBUG_OBJS = \
 RELEASE_OBJS = \
   $(GEN_SRC:%.c=$(RELEASE_BUILD_DIR)/%.o) \
   $(SRC:%.c=$(RELEASE_BUILD_DIR)/%.o)
+COVERAGE_OBJS = \
+  $(GEN_SRC:%.c=$(COVERAGE_BUILD_DIR)/%.o) \
+  $(SRC:%.c=$(COVERAGE_BUILD_DIR)/%.o)
 GEN_FILES = $(GEN_SRC:%=$(GEN_DIR)/%)
 .PRECIOUS: $(GEN_FILES)
+
+DEBUG_LIB = $(DEBUG_BUILD_DIR)/$(LIB)
+RELEASE_LIB = $(RELEASE_BUILD_DIR)/$(LIB)
+DEBUG_LINK = $(DEBUG_BUILD_DIR)/$(LIB_SYMLINK1)
+RELEASE_LINK = $(RELEASE_BUILD_DIR)/$(LIB_SYMLINK1)
+DEBUG_STATIC_LIB = $(DEBUG_BUILD_DIR)/$(STATIC_LIB)
+RELEASE_STATIC_LIB = $(RELEASE_BUILD_DIR)/$(STATIC_LIB)
+COVERAGE_STATIC_LIB = $(COVERAGE_BUILD_DIR)/$(STATIC_LIB)
 
 #
 # Dependencies
 #
 
-DEPS = $(DEBUG_OBJS:%.o=%.d) $(RELEASE_OBJS:%.o=%.d)
+DEPS = $(DEBUG_OBJS:%.o=%.d) $(RELEASE_OBJS:%.o=%.d) $(COVERAGE_OBJS:%.o=%.d)
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(strip $(DEPS)),)
 -include $(DEPS)
@@ -131,41 +139,36 @@ endif
 endif
 
 $(GEN_FILES): | $(GEN_DIR)
-$(DEBUG_OBJS) $(DEBUG_LIB): | $(DEBUG_BUILD_DIR)
-$(RELEASE_OBJS) $(RELEASE_LIB): | $(RELEASE_BUILD_DIR)
+$(DEBUG_OBJS) $(DEBUG_LIB) $(DEBUG_STATIC_LIB): | $(DEBUG_BUILD_DIR)
+$(RELEASE_OBJS) $(RELEASE_LIB) $(RELEASE_STATIC_LIB): | $(RELEASE_BUILD_DIR)
+$(COVERAGE_OBJS) $(COVERAGE_STATIC_LIB): | $(COVERAGE_BUILD_DIR)
 
 #
 # Rules
 #
 
-DEBUG_LIB = $(DEBUG_BUILD_DIR)/$(LIB)
-RELEASE_LIB = $(RELEASE_BUILD_DIR)/$(LIB)
-DEBUG_LINK = $(DEBUG_BUILD_DIR)/$(LIB_SYMLINK1)
-RELEASE_LINK = $(RELEASE_BUILD_DIR)/$(LIB_SYMLINK1)
+debug: $(DEBUG_STATIC_LIB) $(DEBUG_LIB) $(DEBUG_LINK)
 
-debug: $(DEBUG_LIB) $(DEBUG_LINK)
+release: $(RELEASE_STATIC_LIB) $(RELEASE_LIB) $(RELEASE_LINK)
 
-release: $(RELEASE_LIB) $(RELEASE_LINK)
+coverage: $(COVERAGE_STATIC_LIB)
 
 pkgconfig: $(PKGCONFIG)
 
 print_debug_lib:
-	@echo $(DEBUG_LIB)
+	@echo $(DEBUG_STATIC_LIB)
 
 print_release_lib:
-	@echo $(RELEASE_LIB)
+	@echo $(RELEASE_STATIC_LIB)
+
+print_coverage_lib:
+	@echo $(COVERAGE_STATIC_LIB)
 
 print_debug_link:
 	@echo $(DEBUG_LINK)
 
 print_release_link:
 	@echo $(RELEASE_LINK)
-
-print_debug_path:
-	@echo $(DEBUG_BUILD_DIR)
-
-print_release_path:
-	@echo $(RELEASE_BUILD_DIR)
 
 clean:
 	make -C test clean
@@ -202,11 +205,17 @@ $(DEBUG_BUILD_DIR)/%.o : $(GEN_DIR)/%.c
 $(RELEASE_BUILD_DIR)/%.o : $(GEN_DIR)/%.c
 	$(CC) -c $(RELEASE_CFLAGS) -MT"$@" -MF"$(@:%.o=%.d)" $< -o $@
 
+$(COVERAGE_BUILD_DIR)/%.o : $(GEN_DIR)/%.c
+	$(CC) -c $(COVERAGE_CFLAGS) -MT"$@" -MF"$(@:%.o=%.d)" $< -o $@
+
 $(DEBUG_BUILD_DIR)/%.o : $(SRC_DIR)/%.c
 	$(CC) -c $(DEBUG_CFLAGS) -MT"$@" -MF"$(@:%.o=%.d)" $< -o $@
 
 $(RELEASE_BUILD_DIR)/%.o : $(SRC_DIR)/%.c
 	$(CC) -c $(RELEASE_CFLAGS) -MT"$@" -MF"$(@:%.o=%.d)" $< -o $@
+
+$(COVERAGE_BUILD_DIR)/%.o : $(SRC_DIR)/%.c
+	$(CC) -c $(COVERAGE_CFLAGS) -MT"$@" -MF"$(@:%.o=%.d)" $< -o $@
 
 $(DEBUG_LIB): $(DEBUG_OBJS)
 	$(LD) $(DEBUG_OBJS) $(DEBUG_LDFLAGS) -o $@
@@ -222,6 +231,15 @@ $(DEBUG_LINK):
 
 $(RELEASE_LINK):
 	ln -sf $(LIB) $@
+
+$(DEBUG_STATIC_LIB): $(DEBUG_OBJS)
+	$(AR) rc $@ $?
+
+$(RELEASE_STATIC_LIB): $(RELEASE_OBJS)
+	$(AR) rc $@ $?
+
+$(COVERAGE_STATIC_LIB): $(COVERAGE_OBJS)
+	$(AR) rc $@ $?
 
 $(PKGCONFIG): $(LIB_NAME).pc.in
 	sed -e 's/\[version\]/'$(PCVERSION)/g $< > $@
