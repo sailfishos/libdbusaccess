@@ -1,10 +1,10 @@
 Name: libdbusaccess
-Version: 1.0.8
+Version: 1.0.9
 Release: 0
 Summary: Access control over D-Bus
 Group: Development/Libraries
 License: BSD
-URL: https://git.merproject.org/mer-core/libdbusaccess
+URL: https://git.sailfishos.org/mer-core/libdbusaccess
 Source: %{name}-%{version}.tar.bz2
 BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(gio-2.0)
