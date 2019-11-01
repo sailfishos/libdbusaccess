@@ -6,7 +6,7 @@
 # Required packages
 #
 
-PKGS = glib-2.0 gio-2.0 libglibutil
+PKGS = glib-2.0 libglibutil
 
 #
 # Default target
