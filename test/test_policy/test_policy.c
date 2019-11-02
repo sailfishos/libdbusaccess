@@ -143,21 +143,33 @@ test_policy_basic(
     da_policy_unref(policy);
     da_policy_unref(policy);
 
-    policy = da_policy_new_full(V ";user(user:group) & call(foo) & "
-        "(arg('a')|arg(\"b\"))=deny; user(baduser)=allow; "
-        "group(badgroup)=allow", actions);
-    g_assert(policy);
-    da_policy_unref(policy);
+#define BASIC_RULE1 "user(user:group) & call(foo) & " \
+        "(arg('\\'a\\'')|arg(\"\\\"b\\\"\"))=deny; user(baduser)=allow; " \
+        "group(badgroup)=allow"
 
-    policy = da_policy_new_full(V ";user(user) & call('foo')=deny;"
-        "group(*) & call(call) = deny;"
-        "user(22) & call(call)", actions);
+    da_policy_unref(policy = da_policy_new_full(V ";" BASIC_RULE1, actions));
     g_assert(policy);
-    da_policy_unref(policy);
 
-    policy = da_policy_new_full(V ";user(*) & !group(222) = deny; ", actions);
+    da_policy_unref(policy = da_policy_new_full(BASIC_RULE1, actions));
     g_assert(policy);
-    da_policy_unref(policy);
+
+#define BASIC_RULE2 "user(user) & call('foo')=deny;" \
+        "group(*) & call(call) = deny;" \
+        "user(22) & call(call)"
+
+    da_policy_unref(policy = da_policy_new_full(V ";" BASIC_RULE2, actions));
+    g_assert(policy);
+
+    da_policy_unref(policy = da_policy_new_full(BASIC_RULE2, actions));
+    g_assert(policy);
+
+#define BASIC_RULE3 "user(*) & !group(222) = deny; "
+
+    da_policy_unref(policy = da_policy_new_full(V ";" BASIC_RULE3, actions));
+    g_assert(policy);
+
+    da_policy_unref(policy = da_policy_new_full(BASIC_RULE3, actions));
+    g_assert(policy);
 }
 
 /*==========================================================================*

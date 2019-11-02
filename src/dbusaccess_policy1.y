@@ -90,6 +90,14 @@ policy:
     {
         da_parser_add_entries(parser, $3);
     }
+    | entries
+    {
+        da_parser_add_entries(parser, $1);
+    }
+    | entries ';'
+    {
+        da_parser_add_entries(parser, $1);
+    }
 
 version:
     NUMBER
