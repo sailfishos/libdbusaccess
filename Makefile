@@ -65,19 +65,7 @@ BUILD_DIR = build
 GEN_DIR = $(BUILD_DIR)
 DEBUG_BUILD_DIR = $(BUILD_DIR)/debug
 RELEASE_BUILD_DIR = $(BUILD_DIR)/release
-
-#
-# Code coverage
-#
-
-ifndef GCOV
-GCOV = 0
-endif
-
-ifneq ($(GCOV),0)
-CFLAGS += --coverage
-LDFLAGS += --coverage
-endif
+COVERAGE_BUILD_DIR = $(BUILD_DIR)/coverage
 
 #
 # Tools and flags
@@ -177,7 +165,7 @@ clean:
 	rm -f *~ $(SRC_DIR)/*~ $(INCLUDE_DIR)/*~
 	rm -fr $(BUILD_DIR) RPMS installroot
 	rm -fr debian/tmp debian/dbusaccess-tools
-	rm -fr debian/libdbusaccess debian/libdbusaccess-dev
+	rm -fr debian/lib$(NAME) debian/lib$(NAME)-dev
 	rm -f documentation.list debian/files debian/*.substvars
 	rm -f debian/*.debhelper.log debian/*.debhelper debian/*~
 
@@ -191,6 +179,9 @@ $(DEBUG_BUILD_DIR):
 	mkdir -p $@
 
 $(RELEASE_BUILD_DIR):
+	mkdir -p $@
+
+$(COVERAGE_BUILD_DIR):
 	mkdir -p $@
 
 $(GEN_DIR)/%.tab.c : $(SRC_DIR)/%.y

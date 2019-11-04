@@ -35,6 +35,7 @@ COMMON_DIR = ../common
 BUILD_DIR = build
 DEBUG_BUILD_DIR = $(BUILD_DIR)/debug
 RELEASE_BUILD_DIR = $(BUILD_DIR)/release
+COVERAGE_BUILD_DIR = $(BUILD_DIR)/coverage
 
 #
 # Tools and flags
