@@ -5,17 +5,18 @@
 #export DH_VERBOSE=1
 
 DBUS_CREDS_DIR=tools/dbus-creds
+LIBDIR=usr/lib/$(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 override_dh_auto_clean:
 	dh_auto_clean
 	dh_auto_clean -- -C $(DBUS_CREDS_DIR)
 
 override_dh_auto_build:
-	dh_auto_build
+	dh_auto_build -- LIBDIR=$(LIBDIR) release pkgconfig debian/libdbusaccess.install debian/libdbusaccess-dev.install
 	dh_auto_build -- -C $(DBUS_CREDS_DIR)
 
 override_dh_auto_install:
-	dh_auto_install -- install-dev
+	dh_auto_install -- LIBDIR=$(LIBDIR) install-dev
 	dh_auto_install -- -C $(DBUS_CREDS_DIR)
 
 %:

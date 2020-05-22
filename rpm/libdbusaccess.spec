@@ -39,12 +39,12 @@ This package contains the development library for %{name}.
 %setup -q
 
 %build
-make KEEP_SYMBOLS=1 release pkgconfig
-make KEEP_SYMBOLS=1 -C tools/dbus-creds release
+make LIBDIR=%{_libdir} KEEP_SYMBOLS=1 release pkgconfig
+make LIBDIR=%{_libdir} KEEP_SYMBOLS=1 -C tools/dbus-creds release
 
 %install
 rm -rf %{buildroot}
-make DESTDIR=%{buildroot} install-dev
+make DESTDIR=%{buildroot} LIBDIR=%{_libdir} install-dev
 make DESTDIR=%{buildroot} -C tools/dbus-creds install
 
 %check

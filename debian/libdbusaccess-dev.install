@@ -1,3 +1,0 @@
-debian/tmp/usr/lib/libdbusaccess.so usr/lib
-include/*.h usr/include/dbusaccess
-build/libdbusaccess.pc usr/lib/pkgconfig
