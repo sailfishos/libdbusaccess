@@ -1,0 +1,10 @@
+{
+    global:
+        da_peer_*;
+        da_policy_*;
+        da_self_*;
+        da_system_*;
+        dbusaccess_log;
+    local:
+        *;
+};

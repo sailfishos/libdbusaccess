@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
- * Copyright (C) 2017-2019 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2020 Jolla Ltd.
+ * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -72,15 +72,18 @@ typedef struct da_parser_entry {
 DAParser*
 da_parser_compile(
     const char* spec,
-    const DA_ACTION* actions);
+    const DA_ACTION* actions)
+    G_GNUC_INTERNAL;
 
 GSList*
 da_parser_get_result(
-    DAParser* parser);
+    DAParser* parser)
+    G_GNUC_INTERNAL;
 
 void
 da_parser_delete(
-    DAParser* parser);
+    DAParser* parser)
+    G_GNUC_INTERNAL;
 
 #endif /* DBUSACCESS_PARSER_H */
 

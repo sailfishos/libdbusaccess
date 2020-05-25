@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2020 Jolla Ltd.
+ * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -42,7 +42,7 @@ typedef struct yy_buffer_state DAScannerBuffer;
 
 #ifdef DEBUG
 #  define YYDEBUG 1
-extern int da_parser_debug;
+extern int da_parser_debug G_GNUC_INTERNAL;
 #endif
 
 #define YY_LEX da_parser_lex
@@ -58,89 +58,105 @@ void
 da_parser_error(
     DAParser* parser,
     DAScanner* scanner,
-    const char* error);
+    const char* error)
+    G_GNUC_INTERNAL;
 
 /* Generated scanner */
 
 DAScanner*
 da_scanner_create(
-    void);
+    void)
+    G_GNUC_INTERNAL;
 
 void
 da_scanner_delete(
-    DAScanner* scanner);
+    DAScanner* scanner)
+    G_GNUC_INTERNAL;
 
 DAScannerBuffer*
 da_scanner_buffer_create(
     const char* str,
-    DAScanner* scanner);
+    DAScanner* scanner)
+    G_GNUC_INTERNAL;
 
 void
 da_scanner_buffer_delete(
     DAScannerBuffer* buffer,
-    DAScanner* scanner);
+    DAScanner* scanner)
+    G_GNUC_INTERNAL;
 
 int
 da_parser_parse(
     DAParser* parser,
-    DAScanner* scanner);
+    DAScanner* scanner)
+    G_GNUC_INTERNAL;
 
 /* These are for the scanner */
 
 void
 da_parser_start_string(
-    DAParser* parser);
+    DAParser* parser)
+    G_GNUC_INTERNAL;
 
 void
 da_parser_append_char(
     DAParser* parser,
-    char c);
+    char c)
+    G_GNUC_INTERNAL;
 
 const char*
 da_parser_finish_string(
-    DAParser* parser);
+    DAParser* parser)
+    G_GNUC_INTERNAL;
 
 /* And these are for the generated parser */
 
 GSList*
 da_parser_new_link(
     DAParser* parser,
-    void* data);
+    void* data)
+    G_GNUC_INTERNAL;
 
 char*
 da_parser_new_string(
     DAParser* parser,
-    const char* str);
+    const char* str)
+    G_GNUC_INTERNAL;
 
 DAParserExpr*
 da_parser_new_expr_identity(
     DAParser* parser,
     int uid,
-    int gid);
+    int gid)
+    G_GNUC_INTERNAL;
 
 DAParserExpr*
 da_parser_new_expr_custom(
     DAParser* parser,
     const char* name,
-    const char* param);
+    const char* param)
+    G_GNUC_INTERNAL;
 
 DAParserExpr*
 da_parser_new_expr(
     DAParser* parser,
     DA_PARSER_EXPR type,
     DAParserExpr* left,
-    DAParserExpr* right);
+    DAParserExpr* right)
+    G_GNUC_INTERNAL;
 
 DAParserEntry*
 da_parser_new_entry(
     DAParser* parser,
     DAParserExpr* expr,
-    DA_ACCESS access);
+    DA_ACCESS access)
+    G_GNUC_INTERNAL;
 
 void
 da_parser_add_entries(
     DAParser* parser,
-    GSList* entries);
+    GSList* entries)
+    G_GNUC_INTERNAL;
 
 #endif /* DBUSACCESS_PARSER_PRIVATE_H */
 
