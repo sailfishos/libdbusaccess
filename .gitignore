@@ -4,9 +4,11 @@ test/coverage/libdbusaccess.gcov
 test/coverage/results
 debian/files
 debian/libdbusaccess-dev.debhelper.log
+debian/libdbusaccess-dev.install
 debian/libdbusaccess-dev.substvars
 debian/libdbusaccess-dev
 debian/libdbusaccess.debhelper.log
+debian/libdbusaccess.install
 debian/libdbusaccess.postinst.debhelper
 debian/libdbusaccess.postrm.debhelper
 debian/libdbusaccess.substvars

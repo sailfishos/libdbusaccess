@@ -1,0 +1,3 @@
+debian/tmp/@LIBDIR@/libdbusaccess.so @LIBDIR@
+debian/tmp/@LIBDIR@/pkgconfig/libdbusaccess.pc @LIBDIR@/pkgconfig
+debian/tmp/usr/include/* usr/include

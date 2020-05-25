@@ -141,8 +141,6 @@ release: $(RELEASE_STATIC_LIB) $(RELEASE_LIB) $(RELEASE_LINK)
 
 coverage: $(COVERAGE_STATIC_LIB)
 
-pkgconfig: $(PKGCONFIG)
-
 print_debug_lib:
 	@echo $(DEBUG_STATIC_LIB)
 
@@ -168,6 +166,7 @@ clean:
 	rm -fr debian/lib$(NAME) debian/lib$(NAME)-dev
 	rm -f documentation.list debian/files debian/*.substvars
 	rm -f debian/*.debhelper.log debian/*.debhelper debian/*~
+	rm -f debian/libdbusaccess.install debian/libdbusaccess-dev.install
 
 test:
 	make -C test test
@@ -232,22 +231,29 @@ $(RELEASE_STATIC_LIB): $(RELEASE_OBJS)
 $(COVERAGE_STATIC_LIB): $(COVERAGE_OBJS)
 	$(AR) rc $@ $?
 
-$(PKGCONFIG): $(LIB_NAME).pc.in
-	sed -e 's/\[version\]/'$(PCVERSION)/g $< > $@
+# This one could be substituted with arch specific dir
+LIBDIR ?= /usr/lib
+ABS_LIBDIR := $(shell echo /$(LIBDIR) | sed -r 's|/+|/|g')
+
+pkgconfig: $(PKGCONFIG)
+
+$(PKGCONFIG): $(LIB_NAME).pc.in  Makefile
+	sed -e 's|@version@|$(PCVERSION)|g' -e 's|@libdir@|$(ABS_LIBDIR)|g' $< > $@
+
+debian/%.install: debian/%.install.in
+	sed 's|@LIBDIR@|$(LIBDIR)|g' $< > $@
 
 #
 # Install
 #
 
-INSTALL_PERM  = 644
-
 INSTALL = install
 INSTALL_DIRS = $(INSTALL) -d
-INSTALL_FILES = $(INSTALL) -m $(INSTALL_PERM)
+INSTALL_FILES = $(INSTALL) -m 644
 
-INSTALL_LIB_DIR = $(DESTDIR)/usr/lib
+INSTALL_LIB_DIR = $(DESTDIR)$(ABS_LIBDIR)
 INSTALL_INCLUDE_DIR = $(DESTDIR)/usr/include/$(NAME)
-INSTALL_PKGCONFIG_DIR = $(DESTDIR)/usr/lib/pkgconfig
+INSTALL_PKGCONFIG_DIR = $(DESTDIR)$(ABS_LIBDIR)/pkgconfig
 
 install: $(INSTALL_LIB_DIR)
 	$(INSTALL_FILES) $(RELEASE_LIB) $(INSTALL_LIB_DIR)
