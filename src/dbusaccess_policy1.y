@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
- * Copyright (C) 2017-2019 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2020 Jolla Ltd.
+ * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -155,7 +155,7 @@ user:
     {
         $$ = da_system_uid($1);
         if ($$ < 0) {
-            GWARN("Unknown user \"%s\"", $1);
+            GDEBUG("Unknown user \"%s\"", $1);
             $$ = DA_INVALID;
         }
     }
@@ -173,7 +173,7 @@ group:
     {
         $$ = da_system_gid($1);
         if ($$ < 0) {
-            GWARN("Unknown group \"%s\"", $1);
+            GDEBUG("Unknown group \"%s\"", $1);
             $$ = DA_INVALID;
         }
     }
