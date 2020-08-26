@@ -1,5 +1,5 @@
 # -*- Mode: makefile-gmake -*-
 
-EXE = test_self
+EXE = test_proc
 
 include ../common/Makefile

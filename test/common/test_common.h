@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016-2017 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2016-2020 Jolla Ltd.
+ * Copyright (C) 2016-2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,6 +34,15 @@
 #define TEST_COMMON_H
 
 #include <gutil_types.h>
+
+/*
+ * For whatever reason, g_assert() is a special case and can be disabled
+ * with G_DISABLE_ASSERT macro, unlike all other g_assert_* macros. Make
+ * sure that it actually works.
+ */
+#ifdef G_DISABLE_ASSERT
+#  error "g_assert is required by unit tests"
+#endif
 
 #define TEST_FLAG_DEBUG (0x01)
 

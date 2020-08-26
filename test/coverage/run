@@ -6,7 +6,7 @@
 TESTS="\
 test_cred \
 test_policy \
-test_self"
+test_proc"
 
 pushd `dirname $0` > /dev/null
 COV_DIR="$PWD"

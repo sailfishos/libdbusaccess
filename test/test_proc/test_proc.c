@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2020 Jolla Ltd.
+ * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -48,12 +48,30 @@ test_loop_quit(
 }
 
 /*==========================================================================*
- * Basic
+ * Invalid
  *==========================================================================*/
 
 static
 void
-test_self_basic(
+test_proc_invalid(
+    void)
+{
+    /* Test NULL resistance */
+    g_assert(!da_proc_ref(NULL));
+    g_assert(!da_proc_new(0));
+    da_proc_unref(NULL);
+
+    /* Try to query credentials for invalid pid */
+    g_assert(!da_proc_new((pid_t)0xffffffff));
+}
+
+/*==========================================================================*
+ * Self
+ *==========================================================================*/
+
+static
+void
+test_proc_self(
     void)
 {
     DASelf* self;
@@ -70,12 +88,12 @@ test_self_basic(
 }
 
 /*==========================================================================*
- * Shared
+ * SelfShared
  *==========================================================================*/
 
 static
 void
-test_self_shared(
+test_proc_self_shared(
     void)
 {
     GMainLoop* loop = g_main_loop_new(NULL, TRUE);
@@ -126,13 +144,14 @@ test_self_shared(
  * Common
  *==========================================================================*/
 
-#define TEST_PREFIX "/self/"
+#define TEST_(t) "/proc/" t
 
 int main(int argc, char* argv[])
 {
     g_test_init(&argc, &argv, NULL);
-    g_test_add_func(TEST_PREFIX "basic", test_self_basic);
-    g_test_add_func(TEST_PREFIX "shared", test_self_shared);
+    g_test_add_func(TEST_("invalid"), test_proc_invalid);
+    g_test_add_func(TEST_("self"), test_proc_self);
+    g_test_add_func(TEST_("self_shared"), test_proc_self_shared);
     test_init(&test_opt, argc, argv);
     return g_test_run();
 }
