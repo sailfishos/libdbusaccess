@@ -1,3 +1,9 @@
+libdbusaccess (1.0.13) unstable; urgency=low
+
+  * Added DAProc API
+
+ -- Slava Monich <slava.monich@jolla.com>  Thu, 27 Aug 2020 01:12:46 +0300
+
 libdbusaccess (1.0.12) unstable; urgency=low
 
   * Silenced annoying runtime warnings
