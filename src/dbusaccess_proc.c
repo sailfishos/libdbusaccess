@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2020 Jolla Ltd.
- * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2020 Jolla Ltd.
+ * Copyright (C) 2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -30,90 +30,83 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "dbusaccess_self.h"
+#include "dbusaccess_proc.h"
+#include "dbusaccess_cred_p.h"
 #include "dbusaccess_log.h"
 
-#include <sys/types.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <gutil_macros.h>
 
-static guint self_shared_timeout_id;
-static DASelf* self_shared;
+typedef struct da_proc_priv {
+    DAProc pub;
+    DACredPriv cred;
+    gint ref_count;
+} DAProcPriv;
 
-#define DBUSACCESS_SELF_TIMEOUT_SEC (30)
-#define DBUSACCESS_SELF_TIMEOUT_SEC_ENV "DBUSACCESS_SELF_TIMEOUT_SEC"
+static inline DAProcPriv* da_proc_cast(DAProc* proc)
+    { return G_CAST(proc, DAProcPriv, pub); }
 
-DASelf*
-da_self_new(
-    void)
+DAProc*
+da_proc_new(
+    pid_t pid)
 {
-    return da_proc_new(getpid());
-}
+    DAProc* proc = NULL;
 
-static
-gboolean
-da_self_shared_timeout(
-    gpointer data)
-{
-    GVERBOSE_("resetting shared instance");
-    GASSERT(self_shared_timeout_id);
-    GASSERT(self_shared == data);
-    self_shared_timeout_id = 0;
-    self_shared = NULL;
-    return G_SOURCE_REMOVE;
-}
+    if (pid) {
+        char* fname = g_strdup_printf("/proc/%u/status", (guint)pid);
+        GError* error = NULL;
+        gchar* data = NULL;
+        gsize len = 0;
 
-static
-void
-da_self_shared_unref(
-    gpointer data)
-{
-    da_self_unref(data);
-}
+        if (g_file_get_contents(fname, &data, &len, &error)) {
+            DAProcPriv* priv = g_slice_new0(DAProcPriv);
 
-DASelf*
-da_self_new_shared(
-    void)
-{
-    if (!self_shared) {
-        guint sec = DBUSACCESS_SELF_TIMEOUT_SEC;
-        const char* env = getenv(DBUSACCESS_SELF_TIMEOUT_SEC_ENV);
-        if (env) {
-            int interval = atoi(env);
-            if (interval >= 0) {
-                sec = interval;
+            priv->ref_count = 1;
+            GDEBUG("Parsing %s", fname);
+            if (da_cred_parse(&priv->pub.cred, &priv->cred, data, len)) {
+                proc = &priv->pub;
+                proc->pid = pid;
+            } else {
+                g_slice_free(DAProcPriv, priv);
             }
+            g_free(data);
+        } else {
+            GDEBUG("%s: %s", fname, GERRMSG(error));
+            g_error_free(error);
         }
-        GASSERT(!self_shared_timeout_id);
-        self_shared = da_self_new();
-        self_shared_timeout_id = g_timeout_add_seconds_full(G_PRIORITY_DEFAULT,
-            sec, da_self_shared_timeout, self_shared, da_self_shared_unref);
+        g_free(fname);
     }
-    return da_self_ref(self_shared);
+    return proc;
 }
 
-DASelf*
-da_self_ref(
-    DASelf* self)
+static
+void
+da_proc_finalize(
+    DAProcPriv* priv)
 {
-    return da_proc_ref(self);
+    da_cred_priv_cleanup(&priv->cred);
+}
+
+DAProc*
+da_proc_ref(
+    DAProc* proc)
+{
+    if (proc) {
+        DAProcPriv* priv = da_proc_cast(proc);
+        g_atomic_int_inc(&priv->ref_count);
+    }
+    return proc;
 }
 
 void
-da_self_unref(
-    DASelf* self)
+da_proc_unref(
+    DAProc* proc)
 {
-    da_proc_unref(self);
-}
-
-void
-da_self_flush(
-    void)
-{
-    self_shared = NULL;
-    if (self_shared_timeout_id) {
-        g_source_remove(self_shared_timeout_id);
-        self_shared_timeout_id = 0;
+    if (proc) {
+        DAProcPriv* priv = da_proc_cast(proc);
+        if (g_atomic_int_dec_and_test(&priv->ref_count)) {
+            da_proc_finalize(priv);
+            g_slice_free(DAProcPriv, priv);
+        }
     }
 }
 

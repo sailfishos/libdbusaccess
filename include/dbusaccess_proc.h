@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2020 Jolla Ltd.
- * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2020 Jolla Ltd.
+ * Copyright (C) 2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -30,45 +30,35 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DBUSACCESS_SELF_H
-#define DBUSACCESS_SELF_H
+#ifndef DBUSACCESS_PROC_H
+#define DBUSACCESS_PROC_H
 
-#include "dbusaccess_proc.h"
+#include "dbusaccess_types.h"
 
 G_BEGIN_DECLS
 
-/*
- * da_self_new_shared returns the reference to the shared instance,
- * da_self_new always allocates the new one. Shared instance should
- * only be used if you can assume that process credentials never change.
- *
- * You can use da_self_flush to clear the shared instance and force the
- * next da_self_new_shared call to create a new one.
- */
+struct da_proc {
+    pid_t pid;
+    DACred cred;
+};
 
-DASelf*
-da_self_new(
-    void);
+/* Since 1.0.13 */
 
-DASelf*
-da_self_new_shared(
-    void);
+DAProc*
+da_proc_new(
+    pid_t pid);
 
-DASelf*
-da_self_ref(
-    DASelf* self);
+DAProc*
+da_proc_ref(
+    DAProc* proc);
 
 void
-da_self_unref(
-    DASelf* self);
-
-void
-da_self_flush(
-    void);
+da_proc_unref(
+    DAProc* proc);
 
 G_END_DECLS
 
-#endif /* DBUSACCESS_SELF_H */
+#endif /* DBUSACCESS_PROC_H */
 
 /*
  * Local Variables:

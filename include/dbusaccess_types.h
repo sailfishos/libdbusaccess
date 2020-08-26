@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
- * Copyright (C) 2017-2019 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2017-2020 Jolla Ltd.
+ * Copyright (C) 2017-2020 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -63,7 +63,8 @@ typedef struct da_cred {
 
 } DACred;
 
-typedef struct da_self DASelf;
+typedef struct da_proc DAProc; /* Since 1.0.13 */
+typedef struct da_proc DASelf;
 typedef struct da_peer DAPeer;
 typedef struct da_policy /* opaque */ DAPolicy;
 
