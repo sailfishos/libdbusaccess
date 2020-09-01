@@ -1,5 +1,5 @@
 Name: libdbusaccess
-Version: 1.0.13
+Version: 1.0.14
 Release: 0
 Summary: Access control over D-Bus
 License: BSD
