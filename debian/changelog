@@ -1,3 +1,9 @@
+libdbusaccess (1.0.16) unstable; urgency=low
+
+  * Housekeeping
+
+ -- Slava Monich <slava.monich@jolla.com>  Fri, 12 Nov 2021 19:43:51 +0200
+
 libdbusaccess (1.0.14) unstable; urgency=low
 
   * Make library executable on RPM based systems
