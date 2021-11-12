@@ -16,6 +16,7 @@ debian/libdbusaccess
 debian/dbusaccess-tools.debhelper.log
 debian/dbusaccess-tools.substvars
 debian/dbusaccess-tools
+debian/.debhelper
 debian/tmp
 documentation.list
 installroot

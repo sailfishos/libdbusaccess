@@ -1,10 +1,13 @@
 Name: libdbusaccess
+
 Version: 1.0.14
 Release: 0
 Summary: Access control over D-Bus
 License: BSD
 URL: https://github.com/sailfishos/libdbusaccess/
 Source: %{name}-%{version}.tar.bz2
+
+BuildRequires: pkgconfig
 BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(gio-2.0)
 BuildRequires: pkgconfig(libglibutil)
@@ -29,7 +32,6 @@ Provides dbus-creds tool
 %package devel
 Summary: Development library for %{name}
 Requires: %{name} = %{version}
-Requires: pkgconfig
 
 %description devel
 This package contains the development library for %{name}.
@@ -38,7 +40,7 @@ This package contains the development library for %{name}.
 %setup -q
 
 %build
-make LIBDIR=%{_libdir} KEEP_SYMBOLS=1 release pkgconfig
+make %{_smp_mflags} LIBDIR=%{_libdir} KEEP_SYMBOLS=1 release pkgconfig
 make LIBDIR=%{_libdir} KEEP_SYMBOLS=1 -C tools/dbus-creds release
 
 %install
