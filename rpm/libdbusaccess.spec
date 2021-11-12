@@ -3,7 +3,7 @@ Version: 1.0.14
 Release: 0
 Summary: Access control over D-Bus
 License: BSD
-URL: https://git.sailfishos.org/mer-core/libdbusaccess
+URL: https://github.com/sailfishos/libdbusaccess/
 Source: %{name}-%{version}.tar.bz2
 BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(gio-2.0)
@@ -55,6 +55,7 @@ make -C test test
 
 %files
 %defattr(-,root,root,-)
+%license LICENSE
 %{_libdir}/%{name}.so.*
 
 %files devel
