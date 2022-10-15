@@ -13,6 +13,11 @@ BuildRequires: pkgconfig(gio-2.0)
 BuildRequires: pkgconfig(libglibutil)
 BuildRequires: bison
 BuildRequires: flex
+
+# license macro requires rpm >= 4.11
+BuildRequires: pkgconfig(rpm)
+%define license_support %(pkg-config --exists 'rpm >= 4.11'; echo $?)
+
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -57,8 +62,10 @@ make -C test test
 
 %files
 %defattr(-,root,root,-)
-%license LICENSE
 %{_libdir}/%{name}.so.*
+%if %{license_support} == 0
+%license LICENSE
+%endif
 
 %files devel
 %defattr(-,root,root,-)
