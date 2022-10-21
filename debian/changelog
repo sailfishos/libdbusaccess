@@ -1,3 +1,9 @@
+libdbusaccess (1.0.18) unstable; urgency=low
+
+  * Fixed a parallel build issue
+
+ -- Slava Monich <slava.monich@jolla.com>  Fri, 21 Oct 2022 13:00:22 +0300
+
 libdbusaccess (1.0.17) unstable; urgency=low
 
   * Bumped debhelper compat level to 7
