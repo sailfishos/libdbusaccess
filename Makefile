@@ -223,10 +223,10 @@ ifeq ($(KEEP_SYMBOLS),0)
 	strip $@
 endif
 
-$(DEBUG_LINK):
+$(DEBUG_LINK): $(DEBUG_LIB)
 	ln -sf $(LIB) $@
 
-$(RELEASE_LINK):
+$(RELEASE_LINK): $(RELEASE_LIB)
 	ln -sf $(LIB) $@
 
 $(DEBUG_STATIC_LIB): $(DEBUG_OBJS)
