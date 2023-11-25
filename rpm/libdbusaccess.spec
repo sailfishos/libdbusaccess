@@ -7,9 +7,11 @@ License: BSD
 URL: https://github.com/sailfishos/libdbusaccess/
 Source: %{name}-%{version}.tar.bz2
 
+%define glib_version 2.32
+
 BuildRequires: pkgconfig
-BuildRequires: pkgconfig(glib-2.0)
-BuildRequires: pkgconfig(gio-2.0)
+BuildRequires: pkgconfig(glib-2.0) >= %{glib_version}
+BuildRequires: pkgconfig(gio-2.0) >= %{glib_version}
 BuildRequires: pkgconfig(libglibutil)
 BuildRequires: bison
 BuildRequires: flex
@@ -18,6 +20,7 @@ BuildRequires: flex
 BuildRequires: pkgconfig(rpm)
 %define license_support %(pkg-config --exists 'rpm >= 4.11'; echo $?)
 
+Requires: glib2 >= %{glib_version}
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -37,6 +40,7 @@ Provides dbus-creds tool
 %package devel
 Summary: Development library for %{name}
 Requires: %{name} = %{version}
+Requires: pkgconfig(glib-2.0) >= %{glib_version}
 
 %description devel
 This package contains the development library for %{name}.
@@ -49,7 +53,6 @@ make %{_smp_mflags} LIBDIR=%{_libdir} KEEP_SYMBOLS=1 release pkgconfig
 make LIBDIR=%{_libdir} KEEP_SYMBOLS=1 -C tools/dbus-creds release
 
 %install
-rm -rf %{buildroot}
 make DESTDIR=%{buildroot} LIBDIR=%{_libdir} install-dev
 make DESTDIR=%{buildroot} -C tools/dbus-creds install
 
@@ -69,6 +72,7 @@ make -C test test
 
 %files devel
 %defattr(-,root,root,-)
+%dir %{_includedir}/dbusaccess
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/%{name}.so
 %{_includedir}/dbusaccess/*.h

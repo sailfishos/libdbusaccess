@@ -78,6 +78,8 @@ WARNINGS = -Wall
 INCLUDES = -I$(INCLUDE_DIR) -I$(GEN_DIR) -I$(SRC_DIR)
 BASE_FLAGS = -fPIC
 FULL_CFLAGS = $(BASE_FLAGS) $(CFLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES) \
+  -DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_32 \
+  -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_MAX_ALLOWED \
   -MMD -MP $(shell pkg-config --cflags $(PKGS))
 FULL_LDFLAGS = $(BASE_FLAGS) $(LDFLAGS) -shared -Wl,-soname=$(LIB_SONAME) \
   -Wl,--version-script=$(LIB_NAME).map $(shell pkg-config --libs $(PKGS))
