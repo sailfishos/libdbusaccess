@@ -1,3 +1,10 @@
+libdbusaccess (1.0.19) unstable; urgency=low
+
+  * Housekeeping
+  * Fixed a few build issues (e.g. order of file generation)
+
+ -- Slava Monich <slava@monich.com>  Sat, 25 Nov 2023 20:05:04 +0200
+
 libdbusaccess (1.0.18) unstable; urgency=low
 
   * Fixed a parallel build issue
